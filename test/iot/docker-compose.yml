@@ -36,7 +36,7 @@ services:
       - backend
     restart: on-failure
     volumes:
-      - "//C/Docker/influxdb/data:/var/lib/influxdb"
+      - "//C/Docker/IoT/influxdb/data:/var/lib/influxdb"
   
   myvisu:
     image: grafana/grafana
@@ -49,7 +49,32 @@ services:
       - backend
     restart: on-failure
     volumes:
-      - "//C/Docker/grafana/data:/var/lib/grafana"
+      - "//C/Docker/IoT/grafana/data:/var/lib/grafana"
+      
+  mydbui:
+    image: chronograf
+    depends_on:
+      - mydbif
+    ports:
+      - "8888:8888"
+    networks:
+      - frontend
+      - backend
+    restart: on-failure
+    volumes:
+      - "//C/Docker/IoT/chronograf/data:/var/lib/chronograf"
+  
+  mydbif:
+    image: kapacitor
+    depends_on:
+      - mydb
+    ports:
+      - "9092:9092"
+    networks:
+      - backend
+    restart: on-failure
+    volumes:
+      - "//C/Docker/IoT/kapacitor/data:/var/lib/kapacitor"
  
 networks:
   frontend:
