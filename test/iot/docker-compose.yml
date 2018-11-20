@@ -1,0 +1,56 @@
+version: "2"
+services:
+  mynode:
+    image: nodered/node-red-docker:v8
+    depends_on:
+      - mybroker
+    ports:
+      - "1880:1880"
+    networks:
+      - frontend
+      - backend
+    restart: on-failure
+    volumes:
+      - "//C/Docker/IoT/nodered/data:/data"
+      
+  mybroker:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    networks:
+      - backend
+    restart: on-failure
+    volumes:
+      - "//C/Docker/IoT/mosquitto/config:/mosquitto/config"
+      - "//C/Docker/IoT/mosquitto/data:/mosquitto/data"  
+  
+  mydb:
+    image: influxdb
+    depends_on:
+      - mybroker
+      - mynode
+    ports:
+      - "8086:8086"
+    networks:
+      - backend
+    restart: on-failure
+    volumes:
+      - "//C/Docker/influxdb/data:/var/lib/influxdb"
+  
+  myvisu:
+    image: grafana/grafana
+    depends_on:
+      - mydb
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend
+      - backend
+    restart: on-failure
+    volumes:
+      - "//C/Docker/grafana/data:/var/lib/grafana"
+ 
+networks:
+  frontend:
+  backend:
