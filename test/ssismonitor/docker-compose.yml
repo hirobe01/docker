@@ -1,0 +1,12 @@
+version: "2"
+services:
+  ssisdashboard:
+    image: yorek/ssis-dashboard
+    ports:
+      - "5000:5000"
+    restart: on-failure
+    environment:  
+      - "DASHBOARD_CONFIG=config.cfg"
+    volumes:
+      - "//C/Docker/ssismonitor:/usr/src/app/dashboard"
+    
