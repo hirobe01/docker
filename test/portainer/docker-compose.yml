@@ -1,0 +1,9 @@
+version: "2"
+services:
+  mynode:
+    image: portainer/portainer
+    ports:
+      - "9000:9000"
+    restart: on-failure
+    volumes:
+      - "//C/Docker/portainer/data:/data"

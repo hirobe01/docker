@@ -54,7 +54,8 @@ services:
   mydbui:
     image: chronograf
     depends_on:
-      - mydbif
+      - mydbif0
+      - mydbif1
     ports:
       - "8888:8888"
     networks:
@@ -64,7 +65,7 @@ services:
     volumes:
       - "//C/Docker/IoT/chronograf/data:/var/lib/chronograf"
   
-  mydbif:
+  mydbif0:
     image: kapacitor
     depends_on:
       - mydb
@@ -75,7 +76,18 @@ services:
     restart: on-failure
     volumes:
       - "//C/Docker/IoT/kapacitor/data:/var/lib/kapacitor"
- 
+      - "//C/Docker/IoT/kapacitor/config:/etc/kapacitor"
+      
+  mydbif1:
+    image: telegraf
+    depends_on:
+      - mydb
+    networks:
+      - backend
+    restart: on-failure
+    volumes:
+      - "//C/Docker/IoT/telegraf:/etc/telegraf"
+      
 networks:
   frontend:
   backend:
